@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Validar Cadena a partir de una Gramática</title>
+  <style>
+    body { /*controla el diseño del cuerpo de la pagina*/
+    background: #fce7f3; /* cambia el color de fondo */
+    font-family: "Poppins", "Segoe UI", sans-serif; /*fuente principal*/
+    color: #1f2937; /* color de texto que se pondra por default */
+    margin: 0; /* elimina los margenes del navegador que vienen por defecto*/
+    padding: 0; /* elimina relleno por defecto */
+    display: flex; /* usa flexbox para organizar el contenido */
+    justify-content: center; /* centra horizontalmente el contenido */
+    align-items: center; /* centra verticalmente el contenido */
+    min-height: 100vh;    /* ocupa toda la altura de la ventana */
+    }
+
+    .container { /*controla el diseño de la clase contenedor*/
+    text-align: center; /* centra el texto dentro del contenedor */
+    max-width: 700px; /* ancho máximo del contenedor */
+    width: 100%; /* ocupa todo el ancho disponible hasta el máximo */
+    }
+
+    h1 {
+    margin-top: 10px; /* espacio superior */
+    font-size: 28px; /* tamaño de fuente */
+    font-weight: 700; /* grosor de la fuente (negrita) */
+    color: #be185d; /* color del título (rosa fuerte) */
+    }
+
+    .info {/*controla el diseño del cuadro de inffromacion*/
+    background: #fdf2f8; /* color de fondo para el cuadro */
+    border: 2px solid #f9a8d4; /* estilo de borde */
+    border-radius: 12px; /* bordes redondeados */
+    display: inline-block; /* hace que el bloque se ajusste al contenido */
+    padding: 15px 25px; /* espaciado interno */
+    margin: 20px auto; /* epaciado externo y centrado */
+    font-size: 16px; /* tamaño de los textos */
+    color: #6b21a8; /* color del texto*/
+    text-align: left; /* texto alineado a la izquierda dentro del cuadro */
+    }
+
+    input {
+    width: 80%; /* barra de texto ocupa el 80% del ancho */
+    font-size: 16px; /* tamaño de texto dentro del input */
+    padding: 12px; /* espaciado interno */
+    margin: 20px auto; /* espaciado externo y centrado */
+    text-align: center; /* texto centrado dentro del input */
+    border: 2px solid #f472b6; /* borde rosa */
+    border-radius: 10px; /* bordes redondeados */
+    outline: none; /* elimina el borde azul por defecto al hacer foco */
+    transition: 0.3s; /* transición suave para efectos */
+    display: block; /* se muestra como bloque (ocupa toda la línea) */
+    }
+
+    input:focus {
+    border-color: #ec4899; /* Cambia el color del borde al click */
+    box-shadow: 0 0 8px #f472b6; /* Sombra  */
+    }
+
+    button {
+    font-size: 15px; /* tamaño de texto */
+    font-weight: bold; /* texto en negrita */
+    padding: 12px 30px; /* espaciado interno */
+    margin: 10px; /* espaciado externo */
+    border: none; /* sin borde por defecto */
+    border-radius: 8px; /* bordes redondeados */
+    cursor: pointer; /* cambia el cursor a mano */
+    transition: 0.3s; /* transición suave para hover */
+    }
+
+    .validar {
+    background-color: #ec4899; /*color de fondo */
+    color: white; /* color de texto */
+    }
+
+    .validar:hover {
+    background-color: #db2777; /* Fondo más oscuro al pasar el mouse */
+    box-shadow: 0 4px 10px rgba(236,72,153,0.4); /* Sombra rosa */
+    }
+
+    .limpiar {
+    background-color: #f87171; /* color de fondo */
+    color: white; /* color de texto */
+    }
+
+    .limpiar:hover {
+    background-color: #dc2626; /*pone el fondo en rojo al pasar el mouse*/
+    box-shadow: 0 4px 10px rgba(248,113,113,0.4); /* Sombra roja */
+    }
+
+    #resultado {/*controla el diseño del cuadro de reultado*/
+    margin-top: 25px; /* espacio superior */
+    font-size: 20px; /* tamaño de texto */
+    font-weight: bold; /* texto en negrita */
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>VALIDAR CADENA A PARTIR DE UNA GRAMÁTICA</h1>
+    
+    <div class="info">
+      <strong>Gramática:</strong><br>
+      G = {I, Wⁿ, I, WI²ⁿ, J²}<br>
+      I = 2101295<br>
+      W = gh<br>
+      WI = hg<br>
+      J = elva
+    </div>
+
+    <input type="text" id="entrada" placeholder="Ingresa una cadena">
+
+    <button class="validar" onclick="verificar()">VALIDAR</button>
+    <button class="limpiar" onclick="limpiar()">LIMPIAR</button>
+
+    <div id="resultado"></div>
+  </div>
+
+  <script>
+    function validar_i(cadena, i, index) { /*funcion para validar la cadena i*/
+      for (let j = 0; j < i.length; j++) {
+        if (index >= cadena.length || cadena[index] !== i[j]) return null;
+        index++;
+      }
+      return index;
+    }
+
+    function validar_w(cadena, w, index) {/*funcion para validar la cadena w*/
+      let n = 0;
+      while (cadena.slice(index, index + w.length) === w) {
+        n++;
+        index += w.length;
+      }
+      if (n === 0) return [null, null];
+      return [index, n];
+    }
+
+    function validar_wi(cadena, wi, index, n) {/*funcion para validar la cadena wi*/
+      let ni = 0;
+      while (cadena.slice(index, index + wi.length) === wi) {
+        ni++;
+        index += wi.length;
+      }
+      if (ni !== 2 * n) return null;
+      return index;
+    }
+
+    function validar_j(cadena, j, index) {/*funcion para validar la cadena j*/
+      let len = j.length;
+      for (let i = 0; i < len; i++) {
+        if (index + i >= cadena.length || cadena[index + i] !== j[i]) return null;
+      }
+      for (let i = 0; i < len; i++) {
+        if (index + len + i >= cadena.length || cadena[index + len + i] !== j[i]) return null;
+      }
+      return index + 2 * len;
+    }
+
+    function validar_cadena(cadena) {
+      let w = "gh";
+      let wi = "hg";
+      let j = "elva";
+      let i = "2101295";
+      let index = 0;
+
+      index = validar_i(cadena, i, index);
+      if (index === null) return [false, "I no está al inicio"];
+
+      let res = validar_w(cadena, w, index);
+      if (res[0] === null) return [false, "w debe aparecer al menos una vez"];
+      index = res[0];
+      let n = res[1];
+
+      index = validar_i(cadena, i, index);
+      if (index === null) return [false, "Falta la segunda I"];
+
+      index = validar_wi(cadena, wi, index, n);
+      if (index === null) return [false, "w inversa no cumple 2n"];
+
+      index = validar_j(cadena, j, index);
+      if (index === null) return [false, "j debe aparecer 2 veces"];
+
+      if (index !== cadena.length) return [false, "Hay caracteres extra"];
+
+      return [true, "Cadena válida"];
+    }
+
+    function verificar() {
+      let cadena = document.getElementById("entrada").value;
+      let resultado = document.getElementById("resultado");
+
+      if (cadena === "") {
+        resultado.textContent = "Ingresa una cadena";
+        resultado.style.color = "#dc2626";
+        return;
+      }
+
+      let [valido, mensaje] = validar_cadena(cadena);
+      if (valido) {
+        resultado.textContent = "✅ CADENA VÁLIDA";
+        resultado.style.color = "#16a34a";
+      } else {
+        resultado.textContent = "❌ CADENA INVÁLIDA\n" + mensaje;
+        resultado.style.color = "#dc2626";
+      }
+    }
+
+    function limpiar() {
+      document.getElementById("entrada").value = "";
+      document.getElementById("resultado").textContent = "";
+    }
+  </script>
+</body>
+</html>
