@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Validar Cadena a partir de una Gramática</title>
+  <title>Validar Cadena a partir de una Gramatica</title>
   <style>
     body { /*controla el diseño del cuerpo de la pagina*/
     background: #fce7f3; /* cambia el color de fondo */
@@ -103,17 +103,17 @@
     
     <div class="info">
       <strong>Gramática:</strong><br>
-      G = {I, Wⁿ, I, WI²ⁿ, J²}<br>
-      I = 2101295<br>
-      W = gh<br>
+      G  = {I, Wⁿ, I, WI²ⁿ, J²  | n >= 1}<br>
+      I  = 2101295<br>
+      W  = gh<br>
       WI = hg<br>
-      J = elva
+      J  = elva
     </div>
 
     <input type="text" id="entrada" placeholder="Ingresa una cadena">
 
     <button class="validar" onclick="verificar()">VALIDAR</button>
-    <button class="limpiar" onclick="limpiar()">LIMPIAR</button>
+    <button class="limpiar" onclick="limpiar()">REINICIAR</button>
 
     <div id="resultado"></div>
   </div>
@@ -166,23 +166,23 @@
       let index = 0;
 
       index = validar_i(cadena, i, index);
-      if (index === null) return [false, "I no está al inicio"];
+      if (index === null) return [false, "LA CADENA I DEBE ESTAR AL INICIO"];
 
       let res = validar_w(cadena, w, index);
-      if (res[0] === null) return [false, "w debe aparecer al menos una vez"];
+      if (res[0] === null) return [false, "W DEBE APARECER AL MENOS UNA VES"];
       index = res[0];
       let n = res[1];
 
       index = validar_i(cadena, i, index);
-      if (index === null) return [false, "Falta la segunda I"];
+      if (index === null) return [false, "FALTA LA CADENA I EN MEDIO"];
 
       index = validar_wi(cadena, wi, index, n);
-      if (index === null) return [false, "w inversa no cumple 2n"];
+      if (index === null) return [false, "W I NO CUMPLE CON LA REGLA"];
 
       index = validar_j(cadena, j, index);
-      if (index === null) return [false, "j debe aparecer 2 veces"];
+      if (index === null) return [false, "LA CADENA J DEBE APARECER 2 VECES"];
 
-      if (index !== cadena.length) return [false, "Hay caracteres extra"];
+      if (index !== cadena.length) return [false, "LA CADENA POSEE CARACTERES EXTRA"];
 
       return [true, "Cadena válida"];
     }
@@ -192,17 +192,17 @@
       let resultado = document.getElementById("resultado");
 
       if (cadena === "") {
-        resultado.textContent = "Ingresa una cadena";
+        resultado.textContent = "PORFAVOR INGRESE UNA CADENA";
         resultado.style.color = "#dc2626";
         return;
       }
 
       let [valido, mensaje] = validar_cadena(cadena);
       if (valido) {
-        resultado.textContent = "✅ CADENA VÁLIDA";
+        resultado.textContent = "LA CADENA ES VALIDA PARA ESTA GRAMATICA";
         resultado.style.color = "#16a34a";
       } else {
-        resultado.textContent = "❌ CADENA INVÁLIDA\n" + mensaje;
+        resultado.textContent = "LA CADENA NO ES VALIDA PARA ESTA GRAMATICA\n" + mensaje;
         resultado.style.color = "#dc2626";
       }
     }
